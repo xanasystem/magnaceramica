@@ -1,43 +1,59 @@
-# Astro Starter Kit: Minimal
+# Magna Cerámica
+
+Marketing site for **Magna Cerámica**, the ceramic-tile division of Grupo Merhi, connecting leading Spanish tile brands (Baldocer, Alaplana) with the UK market for over 30 years.
+
+Built with [Astro](https://astro.build) — static output, no UI framework, plain CSS with design tokens.
+
+## 🚀 Getting started
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install      # install dependencies (requires Node >= 22.12.0)
+npm run dev      # start the dev server at http://localhost:4321
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+| Command           | Action                                      |
+| :---------------- | :------------------------------------------ |
+| `npm install`     | Install dependencies                        |
+| `npm run dev`     | Start the local dev server                  |
+| `npm run build`   | Build the production site to `./dist/`      |
+| `npm run preview` | Preview the production build locally        |
 
-## 🚀 Project Structure
+## 📁 Project structure
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```
+src/
+  pages/            Routes — index.astro (landing) + legal pages
+  layouts/          Layout.astro (main), LegalLayout.astro (legal pages)
+  components/        One .astro file per landing section
+  data/brands.ts    Brand content (names, descriptions, image paths)
+  config/media.ts   URLs for heavy media hosted on Cloudflare R2
+  styles/global.css Design tokens + global / reusable classes
+public/             Static assets (logos, brand tiles, favicons)
+docs/source-assets/ Original design exports (not served)
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+The landing page composes section components in order:
+**Hero → About → Brands → Experience → CustomTiles → Contact → Footer.**
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## 🎨 Styling
 
-Any static assets, like images, can be placed in the `public/` directory.
+Plain CSS, no Tailwind. Global design tokens (colors, fonts, spacing) live in
+`:root` in [`src/styles/global.css`](src/styles/global.css), along with reusable
+classes (`.container`, `.section`, `.btn`, `.eyebrow`, …). Component-specific
+styles go in scoped `<style>` blocks. Brand palette: terracotta `#905335`;
+fonts Cormorant Garamond (serif) + Montserrat (sans).
 
-## 🧞 Commands
+## 🖼️ Media hosting
 
-All commands are run from the root of the project, from a terminal:
+Heavy files (videos) are **not** bundled in the repo — they are served from a
+Cloudflare R2 bucket. URLs live in [`src/config/media.ts`](src/config/media.ts).
+When adding video or large media, upload it to the bucket and reference it there
+rather than committing the binary.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## 🤝 Contributing
 
-## 👀 Want to learn more?
+To add or edit a brand, update [`src/data/brands.ts`](src/data/brands.ts) — it's
+the single source of truth. To add a section, create a component in
+`src/components/` and import it into `src/pages/index.astro`.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+See [`CLAUDE.md`](CLAUDE.md) for more detailed conventions.
