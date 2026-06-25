@@ -1,0 +1,72 @@
+---
+// Custom / bespoke tile development service
+---
+
+<section class="custom section" id="custom">
+  <div class="custom__grid container">
+    <div class="custom__text">
+      <h2 class="section-title custom__title">Custom Made Tiles</h2>
+      <p class="custom__sub">Tailored ceramic solutions for unique projects</p>
+
+      <p>
+        Magna Cerámica also offers custom-made tile development services,
+        connecting clients with specialized manufacturers for bespoke ceramic
+        tiles, mosaics, and special pieces.
+      </p>
+      <p>
+        From specific formats and finishes to decorative mosaics or
+        made-to-measure ceramic elements, we help bring custom project
+        requirements to life through our network of trusted Spanish producers.
+      </p>
+    </div>
+
+    <figure class="custom__media">
+      <img
+        src="/img/custom-tiles.jpg"
+        alt="Custom made ceramic tiles and mosaics"
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
+  </div>
+</section>
+
+<style>
+  .custom {
+    background: var(--color-cream);
+  }
+
+  .custom__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
+  }
+
+  .custom__title {
+    text-align: left;
+  }
+
+  .custom__sub {
+    margin-top: 0.75rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    letter-spacing: 0.02em;
+  }
+
+  .custom__text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .custom__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media (max-width: 768px) {
+    .custom__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

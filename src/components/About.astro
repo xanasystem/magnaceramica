@@ -1,0 +1,46 @@
+---
+// Corporate intro text over marble background
+---
+
+<section class="about" id="about">
+  <div class="about__inner container">
+    <p class="about__text">
+      With an experienced team and a strong network in Spain's ceramic sector,
+      Magna is a trusted source for quality products, reliable manufacturers,
+      and professional service.
+    </p>
+  </div>
+</section>
+
+<style>
+  .about {
+    position: relative;
+    background-image: url("/img/corporate-bg.jpg");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    text-align: center;
+  }
+
+  .about__inner {
+    padding-block: clamp(4rem, 10vw, 8rem);
+  }
+
+  .about__text {
+    max-width: 52rem;
+    margin-inline: auto;
+    margin-bottom: 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.4rem, 2.6vw, 2.25rem);
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+
+  /* background-attachment: fixed is unreliable on mobile */
+  @media (max-width: 768px) {
+    .about {
+      background-attachment: scroll;
+    }
+  }
+</style>

@@ -1,0 +1,30 @@
+---
+import { brands } from "../data/brands";
+import BrandBlock from "./BrandBlock.astro";
+---
+
+<section class="brands section" id="brands">
+  <div class="container">
+    <p class="eyebrow brands__eyebrow">Our Partners</p>
+    <h2 class="section-title">Trusted Brands We Represent</h2>
+  </div>
+
+  <div class="brands__list container">
+    {brands.map((brand) => <BrandBlock brand={brand} />)}
+  </div>
+</section>
+
+<style>
+  .brands {
+    background: var(--color-white);
+  }
+
+  .brands__eyebrow {
+    text-align: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .brands__list {
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+  }
+</style>

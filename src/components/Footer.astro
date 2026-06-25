@@ -1,0 +1,118 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="footer__media">
+    <img
+      src="/img/team.jpg"
+      alt="The Magna Cerámica team at work"
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="footer__media-overlay"></div>
+  </div>
+
+  <div class="footer__bar">
+    <p class="footer__group">
+      Magna Cerámica is the ceramic tile division of
+      <img src="/img/logo-merhi.png" alt="Grupo Merhi" class="footer__merhi" />
+    </p>
+
+    <img
+      src="/img/logo-magna-footer.png"
+      alt="Magna Cerámica"
+      class="footer__logo"
+    />
+
+    <nav class="footer__legal" aria-label="Legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Legal Notice</a>
+      <a href="#">Cookies Policy</a>
+      <a href="#">Privacy Preferences</a>
+    </nav>
+
+    <p class="footer__copy">&copy; {year} Magna Cerámica. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-dark);
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .footer__media {
+    position: relative;
+    aspect-ratio: 16 / 5;
+    max-height: 420px;
+    overflow: hidden;
+  }
+
+  .footer__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .footer__media-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(20, 18, 16, 0.2) 0%,
+      rgba(20, 18, 16, 0.85) 100%
+    );
+  }
+
+  .footer__bar {
+    text-align: center;
+    padding: clamp(2rem, 5vw, 3.5rem) var(--gutter);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .footer__group {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    letter-spacing: 0.03em;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .footer__merhi {
+    height: 22px;
+    width: auto;
+  }
+
+  .footer__logo {
+    height: clamp(48px, 7vw, 70px);
+    width: auto;
+  }
+
+  .footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .footer__legal a:hover {
+    color: var(--color-white);
+  }
+
+  .footer__copy {
+    margin: 0;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.4);
+  }
+</style>

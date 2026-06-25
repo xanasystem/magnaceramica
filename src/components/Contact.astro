@@ -1,0 +1,240 @@
+---
+// Contact form + company details.
+// NOTE: set a real form endpoint in FORM_ENDPOINT (e.g. Formspree / Web3Forms)
+// before going live — there is no backend in this project.
+const FORM_ENDPOINT = "";
+---
+
+<section class="contact section" id="contact">
+  <div class="contact__grid container">
+    <div class="contact__intro">
+      <h2 class="contact__title">Get in touch</h2>
+      <p class="contact__lead">
+        Tell us what you're looking for and we'll help you connect with the
+        right Spanish tile brands for the UK market.
+      </p>
+
+      <h3 class="contact__subhead">Contact info</h3>
+      <ul class="contact__details">
+        <li>
+          <span class="contact__icon" aria-hidden="true">&#9679;</span>
+          Avda. Casalduch 55 (12005), Castellón, Spain
+        </li>
+        <li>
+          <span class="contact__icon" aria-hidden="true">&#9679;</span>
+          <a href="tel:+34964252250">+34 964 252 250</a>
+        </li>
+        <li>
+          <span class="contact__icon" aria-hidden="true">&#9679;</span>
+          <a href="mailto:info@magnaceramica.es">info@magnaceramica.es</a>
+        </li>
+      </ul>
+    </div>
+
+    <form
+      class="contact__form"
+      method="POST"
+      action={FORM_ENDPOINT}
+      data-contact-form
+    >
+      <div class="contact__row">
+        <input type="text" name="first_name" placeholder="First Name" required />
+        <input type="email" name="email" placeholder="Email" required />
+        <input type="tel" name="phone" placeholder="Phone" />
+      </div>
+      <input type="text" name="subject" placeholder="Subject" />
+      <textarea name="message" rows="6" placeholder="Your message" required></textarea>
+
+      <label class="contact__check">
+        <input type="checkbox" name="terms" required />
+        <span>Check here if you accept our terms &amp; conditions</span>
+      </label>
+
+      <button type="submit" class="btn contact__submit">Submit message</button>
+      <p class="contact__status" data-status role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</section>
+
+<style>
+  .contact {
+    background: var(--color-white);
+  }
+
+  .contact__grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: clamp(2rem, 5vw, 4.5rem);
+  }
+
+  .contact__title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    color: var(--color-primary);
+  }
+
+  .contact__lead {
+    margin-top: 1rem;
+    max-width: 26rem;
+    color: var(--color-muted);
+  }
+
+  .contact__subhead {
+    margin-top: 2rem;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.02em;
+  }
+
+  .contact__details {
+    list-style: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .contact__details li {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-size: 0.95rem;
+  }
+
+  .contact__icon {
+    color: var(--color-primary);
+    font-size: 0.7rem;
+  }
+
+  .contact__details a:hover {
+    color: var(--color-primary);
+  }
+
+  /* Form */
+  .contact__form {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .contact__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.9rem;
+  }
+
+  .contact__form input,
+  .contact__form textarea {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--color-ink);
+    background: var(--color-grey);
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition: border-color 0.25s var(--ease), background 0.25s var(--ease);
+  }
+
+  .contact__form input:focus,
+  .contact__form textarea:focus {
+    outline: none;
+    background: var(--color-white);
+    border-color: var(--color-primary);
+  }
+
+  .contact__form textarea {
+    resize: vertical;
+  }
+
+  .contact__check {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+  }
+
+  .contact__check input {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--color-primary);
+  }
+
+  .contact__submit {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .contact__status {
+    margin: 0;
+    font-size: 0.9rem;
+    min-height: 1.2em;
+  }
+
+  .contact__status[data-state="ok"] { color: #2f7d4f; }
+  .contact__status[data-state="error"] { color: #b3402f; }
+
+  @media (max-width: 768px) {
+    .contact__grid {
+      grid-template-columns: 1fr;
+    }
+    .contact__row {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  function initContactForm() {
+    const form = document.querySelector<HTMLFormElement>("[data-contact-form]");
+    if (!form) return;
+    const status = form.querySelector<HTMLElement>("[data-status]");
+
+    form.addEventListener("submit", async (e) => {
+      // No endpoint configured yet → keep the user informed instead of failing silently.
+      if (!form.getAttribute("action")) {
+        e.preventDefault();
+        if (status) {
+          status.textContent =
+            "Thanks! The form endpoint is not configured yet.";
+          status.dataset.state = "error";
+        }
+        return;
+      }
+
+      e.preventDefault();
+      if (status) {
+        status.textContent = "Sending…";
+        status.dataset.state = "";
+      }
+
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (res.ok) {
+          form.reset();
+          if (status) {
+            status.textContent = "Message sent. We'll be in touch shortly.";
+            status.dataset.state = "ok";
+          }
+        } else {
+          throw new Error("Request failed");
+        }
+      } catch {
+        if (status) {
+          status.textContent =
+            "Something went wrong. Please email info@magnaceramica.es.";
+          status.dataset.state = "error";
+        }
+      }
+    });
+  }
+
+  initContactForm();
+  document.addEventListener("astro:after-swap", initContactForm);
+</script>
