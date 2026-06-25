@@ -5,6 +5,11 @@
 <section class="about" id="about">
   <div class="about__inner container">
     <p class="about__text">
+      Magna Cerámica connects the UK market with leading Spanish ceramic tile
+      brands through specialized commercial representation and expert industry
+      support.
+    </p>
+    <p class="about__text">
       With an experienced team and a strong network in Spain's ceramic sector,
       Magna is a trusted source for quality products, reliable manufacturers,
       and professional service.
@@ -27,14 +32,18 @@
   }
 
   .about__text {
-    max-width: 52rem;
+    max-width: 58rem;
     margin-inline: auto;
     margin-bottom: 0;
     font-family: var(--font-serif);
     font-weight: 400;
-    font-size: clamp(1.4rem, 2.6vw, 2.25rem);
-    line-height: 1.4;
+    font-size: clamp(1.1rem, 1.9vw, 1.6rem);
+    line-height: 1.5;
     color: var(--color-ink);
+  }
+
+  .about__text + .about__text {
+    margin-top: 1.5em;
   }
 
   /* background-attachment: fixed is unreliable on mobile */

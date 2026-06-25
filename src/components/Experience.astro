@@ -11,14 +11,18 @@ import { media } from "../config/media";
     loop
     playsinline
     preload="none"
-    poster="/img/team.jpg"
+    poster="/img/connecting-uk.jpg"
   >
     <source src={media.experienceVideo} type="video/mp4" />
   </video>
   <div class="experience__overlay"></div>
 
   <div class="experience__content container">
-    <span class="experience__wordmark">Magna Cerámica</span>
+    <img
+      src="/img/logo-magna-white.png"
+      alt="Magna Cerámica"
+      class="experience__logo"
+    />
     <h2 class="experience__title">Over 30 Years Connecting Spain and the UK</h2>
     <p class="experience__text">
       For more than three decades, Magna Cerámica has been a pioneer in
@@ -52,7 +56,7 @@ import { media } from "../config/media";
   .experience__overlay {
     position: absolute;
     inset: 0;
-    background: rgba(20, 18, 16, 0.55);
+    background: rgba(20, 18, 16, 0.8);
     z-index: -1;
   }
 
@@ -60,23 +64,23 @@ import { media } from "../config/media";
     max-width: 60rem;
   }
 
-  .experience__wordmark {
-    font-family: var(--font-serif);
-    font-size: clamp(1.5rem, 3vw, 2.25rem);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+  .experience__logo {
+    display: block;
+    margin-inline: auto;
+    width: 180px;
+    height: auto;
   }
 
   .experience__title {
     margin-top: 1.25rem;
     font-family: var(--font-sans);
     font-weight: 600;
-    font-size: clamp(1.25rem, 2.6vw, 2rem);
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
     letter-spacing: 0.02em;
   }
 
   .experience__text {
-    margin-top: 1.25rem;
+    margin-top: 0.75rem;
     margin-bottom: 0;
     font-size: clamp(0.95rem, 1.5vw, 1.1rem);
     line-height: 1.7;

@@ -13,12 +13,14 @@ const year = new Date().getFullYear();
     <div class="footer__media-overlay"></div>
   </div>
 
-  <div class="footer__bar">
-    <p class="footer__group">
-      Magna Cerámica is the ceramic tile division of
-      <img src="/img/logo-merhi.png" alt="Grupo Merhi" class="footer__merhi" />
-    </p>
+  <p class="footer__group">
+    Magna Cerámica is the ceramic tile division of
+    <img src="/img/logo-merhi.png" alt="Grupo Merhi" class="footer__merhi" />
+  </p>
 
+  <hr class="footer__divider" />
+
+  <div class="footer__bar">
     <img
       src="/img/logo-magna-footer.png"
       alt="Magna Cerámica"
@@ -27,8 +29,11 @@ const year = new Date().getFullYear();
 
     <nav class="footer__legal" aria-label="Legal">
       <a href="/privacy-policy">Privacy Policy</a>
+      <span class="footer__sep" aria-hidden="true">|</span>
       <a href="/legal-notice">Legal Notice</a>
+      <span class="footer__sep" aria-hidden="true">|</span>
       <a href="/cookies-policy">Cookies Policy</a>
+      <span class="footer__sep" aria-hidden="true">|</span>
       <a href="/cookies-policy#preferences">Privacy Preferences</a>
     </nav>
 
@@ -38,14 +43,20 @@ const year = new Date().getFullYear();
 
 <style>
   .footer {
-    background: var(--color-dark);
+    background: #000;
     color: rgba(255, 255, 255, 0.85);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding-bottom: 3rem;
   }
 
   .footer__media {
     position: relative;
-    aspect-ratio: 16 / 5;
-    max-height: 420px;
+    width: 100%;
+    aspect-ratio: 1920 / 332;
+    max-height: 332px;
     overflow: hidden;
   }
 
@@ -58,20 +69,7 @@ const year = new Date().getFullYear();
   .footer__media-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(20, 18, 16, 0.2) 0%,
-      rgba(20, 18, 16, 0.85) 100%
-    );
-  }
-
-  .footer__bar {
-    text-align: center;
-    padding: clamp(2rem, 5vw, 3.5rem) var(--gutter);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
+    background: rgba(0, 0, 0, 0.4);
   }
 
   .footer__group {
@@ -80,34 +78,63 @@ const year = new Date().getFullYear();
     align-items: center;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.6rem;
-    font-size: 0.85rem;
-    letter-spacing: 0.03em;
-    color: rgba(255, 255, 255, 0.7);
+    gap: 0.75rem;
+    font-size: clamp(0.95rem, 1.4vw, 1.25rem);
+    font-weight: 300;
+    letter-spacing: 0.02em;
+    color: var(--color-white);
   }
 
   .footer__merhi {
-    height: 22px;
+    height: 30px;
     width: auto;
   }
 
+  .footer__divider {
+    width: 100%;
+    height: 0;
+    margin: 0;
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .footer__bar {
+    text-align: center;
+    padding: 0 var(--gutter);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
   .footer__logo {
-    height: clamp(48px, 7vw, 70px);
-    width: auto;
+    width: 180px;
+    height: auto;
+    margin-bottom: 4rem;
   }
 
   .footer__legal {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 0.5rem 1.5rem;
-    font-size: 0.78rem;
-    letter-spacing: 0.04em;
-    color: rgba(255, 255, 255, 0.6);
+    align-items: center;
+    gap: 0.4rem 0.75rem;
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .footer__legal a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
   }
 
   .footer__legal a:hover {
     color: var(--color-white);
+  }
+
+  .footer__sep {
+    color: rgba(255, 255, 255, 0.35);
   }
 
   .footer__copy {

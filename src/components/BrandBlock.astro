@@ -23,16 +23,22 @@ const panelLeft = brand.panel === "left";
     <div class="brand__panel">
       <h3 class="brand__name">{brand.name}</h3>
       <p class="brand__desc">{brand.description}</p>
-      <a class="btn btn--ghost" href={brand.url} target="_blank" rel="noopener">
-        Visit {brand.name}
+      <a class="brand__visit" href={brand.url} target="_blank" rel="noopener">
+        <span>Visit {brand.name}</span>
+        <svg class="brand__visit-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path
+            d="M6.6967 17.3033L17.3033 6.6967M17.5685 14.9168L17.3033 6.6967L9.08318 6.43153"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="square"
+            stroke-linejoin="round"
+          />
+        </svg>
       </a>
     </div>
   </div>
 
   <div class="carousel" data-carousel>
-    <button class="carousel__nav carousel__nav--prev" data-prev aria-label="Previous">
-      &#8249;
-    </button>
     <ul class="carousel__track" data-track>
       {
         brand.carousel.map((src) => {
@@ -40,26 +46,31 @@ const panelLeft = brand.panel === "left";
           return (
             <li class="carousel__item">
               <img src={src} alt={`${name} — ${brand.name}`} loading="lazy" decoding="async" />
-              <span class="carousel__caption">{name}</span>
             </li>
           );
         })
       }
     </ul>
-    <button class="carousel__nav carousel__nav--next" data-next aria-label="Next">
-      &#8250;
-    </button>
+    <div class="carousel__dots" aria-label={`${brand.name} gallery navigation`}>
+      {
+        brand.carousel.map((_, i) => (
+          <button class="carousel__dot" data-dot={i} aria-label={`Go to image ${i + 1}`} />
+        ))
+      }
+    </div>
   </div>
 </article>
 
 <style>
   .brand {
+    --carousel-gap: clamp(0.75rem, 1.4vw, 1.25rem);
     margin-block: clamp(2.5rem, 6vw, 4.5rem);
   }
 
   .brand__feature {
     display: grid;
     grid-template-columns: 1.6fr 1fr;
+    gap: var(--carousel-gap);
     min-height: clamp(360px, 42vw, 560px);
   }
 
@@ -92,7 +103,7 @@ const panelLeft = brand.panel === "left";
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 1.25rem;
+    gap: 0.75rem;
   }
 
   .brand__name {
@@ -110,30 +121,63 @@ const panelLeft = brand.panel === "left";
     color: rgba(255, 255, 255, 0.92);
   }
 
-  .brand__panel .btn--ghost {
+  .brand__visit {
     align-self: flex-start;
     margin-top: 0.5rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-white);
+    transition: opacity 0.25s var(--ease);
   }
 
-  /* ---- Carousel ---- */
+  .brand__visit-arrow {
+    width: 1.2em;
+    height: 1.2em;
+    flex-shrink: 0;
+    transition: transform 0.3s var(--ease);
+  }
+
+  .brand__visit:hover {
+    opacity: 0.85;
+  }
+
+  .brand__visit:hover .brand__visit-arrow {
+    transform: translate(2px, -2px);
+  }
+
+  /* ---- Carousel (right-bleed, horizontal format) ---- */
   .carousel {
     position: relative;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.75rem;
+    /* Top space matches the gap between carousel images */
+    margin-top: var(--carousel-gap);
   }
 
   .carousel__track {
     list-style: none;
     margin: 0;
-    padding: 0.25rem;
+    padding: 0;
     display: flex;
-    gap: 0.75rem;
+    gap: var(--carousel-gap);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     scrollbar-width: none;
+    cursor: grab;
+    /* Extend the track to the right viewport edge (no right margin) */
+    margin-right: calc(50% - 50vw);
+  }
+
+  .carousel__track.is-dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+    scroll-snap-type: none;
+    user-select: none;
   }
 
   .carousel__track::-webkit-scrollbar {
@@ -142,8 +186,8 @@ const panelLeft = brand.panel === "left";
 
   .carousel__item {
     position: relative;
-    flex: 0 0 clamp(180px, 24vw, 300px);
-    aspect-ratio: 3 / 4;
+    flex: 0 0 clamp(230px, 26vw, 350px);
+    aspect-ratio: 3 / 2;
     scroll-snap-align: start;
     overflow: hidden;
   }
@@ -159,36 +203,33 @@ const panelLeft = brand.panel === "left";
     transform: scale(1.05);
   }
 
-  .carousel__caption {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    padding: 0.4rem 0.7rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-white);
-    background: rgba(20, 18, 16, 0.55);
+  /* ---- Pill dots ---- */
+  .carousel__dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    margin-top: clamp(1rem, 2vw, 1.5rem);
   }
 
-  .carousel__nav {
-    flex: 0 0 auto;
-    width: 44px;
-    height: 44px;
-    border: 1px solid var(--color-grey);
-    background: var(--color-white);
-    color: var(--color-ink);
-    font-size: 1.4rem;
-    line-height: 1;
+  .carousel__dot {
+    width: 6px;
+    height: 6px;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: var(--color-grey);
     cursor: pointer;
-    transition: background 0.25s var(--ease), color 0.25s var(--ease);
+    transition: width 0.35s var(--ease), background 0.35s var(--ease);
   }
 
-  .carousel__nav:hover {
-    background: var(--color-primary);
-    color: var(--color-white);
-    border-color: var(--color-primary);
+  .carousel__dot:hover {
+    background: var(--color-muted);
+  }
+
+  .carousel__dot.is-active {
+    width: 22px;
+    background: rgba(144, 83, 53, 0.6);
   }
 
   @media (max-width: 768px) {
@@ -205,36 +246,101 @@ const panelLeft = brand.panel === "left";
     .brand__main {
       min-height: 240px;
     }
-
-    .carousel__nav {
-      display: none;
-    }
   }
 </style>
 
 <script>
-  function initCarousels() {
+  function initBrandCarousels() {
     document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((root) => {
       const track = root.querySelector<HTMLElement>("[data-track]");
-      const prev = root.querySelector<HTMLElement>("[data-prev]");
-      const next = root.querySelector<HTMLElement>("[data-next]");
-      if (!track) return;
+      const dots = Array.from(root.querySelectorAll<HTMLElement>("[data-dot]"));
+      if (!track || !dots.length) return;
 
       const step = () => {
         const first = track.querySelector<HTMLElement>(".carousel__item");
-        const gap = parseFloat(getComputedStyle(track).columnGap || "12") || 12;
-        return first ? first.offsetWidth + gap : track.clientWidth * 0.8;
+        const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
+        return first ? first.offsetWidth + gap : 1;
       };
 
-      prev?.addEventListener("click", () =>
-        track.scrollBy({ left: -step() * 2, behavior: "smooth" })
+      const setActive = (i: number) => {
+        dots.forEach((d, idx) => d.classList.toggle("is-active", idx === i));
+      };
+
+      const update = () => {
+        const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+        const raw = atEnd ? dots.length - 1 : Math.round(track.scrollLeft / step());
+        setActive(Math.max(0, Math.min(dots.length - 1, raw)));
+      };
+
+      dots.forEach((d, i) =>
+        d.addEventListener("click", () =>
+          track.scrollTo({ left: step() * i, behavior: "smooth" })
+        )
       );
-      next?.addEventListener("click", () =>
-        track.scrollBy({ left: step() * 2, behavior: "smooth" })
+
+      let ticking = false;
+      track.addEventListener(
+        "scroll",
+        () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            update();
+            ticking = false;
+          });
+        },
+        { passive: true }
       );
+
+      // ---- Drag to scroll ----
+      let isDown = false;
+      let startX = 0;
+      let startScroll = 0;
+      let moved = false;
+
+      track.addEventListener("pointerdown", (e) => {
+        if (e.button !== 0) return;
+        isDown = true;
+        moved = false;
+        startX = e.clientX;
+        startScroll = track.scrollLeft;
+        track.classList.add("is-dragging");
+        track.setPointerCapture(e.pointerId);
+      });
+
+      track.addEventListener("pointermove", (e) => {
+        if (!isDown) return;
+        const dx = e.clientX - startX;
+        if (Math.abs(dx) > 3) moved = true;
+        track.scrollLeft = startScroll - dx;
+      });
+
+      const endDrag = (e: PointerEvent) => {
+        if (!isDown) return;
+        isDown = false;
+        track.classList.remove("is-dragging");
+        try {
+          track.releasePointerCapture(e.pointerId);
+        } catch {}
+      };
+
+      track.addEventListener("pointerup", endDrag);
+      track.addEventListener("pointercancel", endDrag);
+      // Suppress click navigation right after a drag
+      track.addEventListener("click", (e) => {
+        if (moved) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      });
+      // Prevent the browser's native image-drag ghost
+      track.addEventListener("dragstart", (e) => e.preventDefault());
+
+      update();
     });
   }
 
-  initCarousels();
-  document.addEventListener("astro:after-swap", initCarousels);
+  initBrandCarousels();
+  document.addEventListener("astro:after-swap", initBrandCarousels);
 </script>
+

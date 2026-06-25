@@ -16,22 +16,38 @@
       <h3 class="contact__subhead">Contact info</h3>
       <ul class="contact__details">
         <li>
-          <span class="contact__icon" aria-hidden="true">&#9679;</span>
+          <span class="contact__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 21s-7-5.686-7-11a7 7 0 0 1 14 0c0 5.314-7 11-7 11Z" />
+              <circle cx="12" cy="10" r="2.5" />
+            </svg>
+          </span>
           Avda. Casalduch 55 (12005), Castellón, Spain
         </li>
         <li>
-          <span class="contact__icon" aria-hidden="true">&#9679;</span>
+          <span class="contact__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.9.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" />
+            </svg>
+          </span>
           <a href="tel:+34964252250">+34 964 252 250</a>
         </li>
         <li>
-          <span class="contact__icon" aria-hidden="true">&#9679;</span>
+          <span class="contact__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="m3 7 9 6 9-6" />
+            </svg>
+          </span>
           <a href="mailto:info@magnaceramica.es">info@magnaceramica.es</a>
         </li>
       </ul>
     </div>
 
     <!-- Form placeholder: embed the contact form app here later -->
-    <div class="contact__form-placeholder" data-form-slot aria-hidden="true"></div>
+    <div class="contact__form-placeholder" data-form-slot>
+      <span class="contact__form-hint">Contact form coming soon</span>
+    </div>
   </div>
 </section>
 
@@ -56,7 +72,7 @@
   .contact__lead {
     margin-top: 1rem;
     max-width: 26rem;
-    color: var(--color-muted);
+    color: var(--color-ink);
   }
 
   .contact__subhead {
@@ -83,8 +99,14 @@
   }
 
   .contact__icon {
+    display: inline-flex;
+    flex-shrink: 0;
     color: var(--color-primary);
-    font-size: 0.7rem;
+  }
+
+  .contact__icon svg {
+    width: 20px;
+    height: 20px;
   }
 
   .contact__details a:hover {
@@ -94,6 +116,19 @@
   /* Reserves vertical space where the embedded form will go */
   .contact__form-placeholder {
     min-height: clamp(320px, 38vw, 420px);
+    display: grid;
+    place-items: center;
+    border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--color-primary) 4%, transparent);
+  }
+
+  .contact__form-hint {
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
   }
 
   @media (max-width: 768px) {
@@ -101,7 +136,7 @@
       grid-template-columns: 1fr;
     }
     .contact__form-placeholder {
-      min-height: 0;
+      min-height: clamp(220px, 50vw, 300px);
     }
   }
 </style>

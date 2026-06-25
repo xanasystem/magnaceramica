@@ -11,7 +11,7 @@ import { media } from "../config/media";
     loop
     playsinline
     preload="auto"
-    poster="/img/corporate-bg.jpg"
+    poster="/img/hero-poster.jpg"
   >
     <source src={media.headerVideo} type="video/mp4" />
   </video>
@@ -32,7 +32,8 @@ import { media } from "../config/media";
   </div>
 
   <a class="hero__scroll" href="#about" aria-label="Scroll to content">
-    <span></span>
+    <span class="hero__scroll-text">Discover more</span>
+    <span class="hero__scroll-mouse"></span>
   </a>
 </section>
 
@@ -80,12 +81,12 @@ import { media } from "../config/media";
   }
 
   .hero__logo {
-    width: clamp(140px, 14vw, 200px);
+    width: 180px;
     height: auto;
   }
 
   .hero__content {
-    max-width: 80rem;
+    max-width: 72rem;
     padding-inline: var(--gutter);
   }
 
@@ -112,6 +113,23 @@ import { media } from "../config/media";
     bottom: 2rem;
     left: 50%;
     transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-white);
+    text-decoration: none;
+  }
+
+  .hero__scroll-text {
+    font-size: clamp(0.7rem, 1.2vw, 0.8rem);
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .hero__scroll-mouse {
     width: 26px;
     height: 42px;
     border: 1.5px solid rgba(255, 255, 255, 0.7);
@@ -121,7 +139,8 @@ import { media } from "../config/media";
     padding-top: 8px;
   }
 
-  .hero__scroll span {
+  .hero__scroll-mouse::before {
+    content: "";
     width: 3px;
     height: 8px;
     border-radius: 2px;
