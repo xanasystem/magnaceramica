@@ -29,6 +29,6 @@ pnpm-debug.log*
 # vercel
 .vercel/
 
-# internal design material — not for the repo
-Materiales Magna/
+# internal docs & source material — reference only, not for the repo
+docs/source-assets/
 *.pdf

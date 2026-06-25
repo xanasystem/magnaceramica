@@ -7,10 +7,10 @@
   --color-primary: #905335;       /* terracotta */
   --color-primary-dark: #7a4529;
   --color-grey: #eaeaea;
+  --color-grey-light: #F2F2F2;
   --color-ink: #1c1a18;           /* near-black text */
   --color-dark: #141210;          /* dark bands / footer */
-  --color-muted: #6b6358;         /* secondary text */
-  --color-cream: #f7f4f0;         /* light section bg */
+  --color-muted: #6b6358;         /* secondary text */        /* light section bg */
   --color-white: #ffffff;
 
   /* Typography */
