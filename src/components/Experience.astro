@@ -1,6 +1,8 @@
 ---
 // Full-width video band — heritage / UK connection statement
+import { Image } from "astro:assets";
 import { media } from "../config/media";
+import logoWhite from "../assets/logo-magna-white.png";
 ---
 
 <section class="experience" id="experience">
@@ -18,8 +20,10 @@ import { media } from "../config/media";
   <div class="experience__overlay"></div>
 
   <div class="experience__content container">
-    <img
-      src="/img/logo-magna-white.png"
+    <Image
+      src={logoWhite}
+      width={180}
+      height={61}
       alt="Magna Cerámica"
       class="experience__logo"
     />

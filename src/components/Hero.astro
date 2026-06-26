@@ -1,6 +1,8 @@
 ---
 // Full-screen hero with background video and centered wordmark
+import { Image } from "astro:assets";
 import { media } from "../config/media";
+import logoWhite from "../assets/logo-magna-white.png";
 ---
 
 <section class="hero">
@@ -18,11 +20,11 @@ import { media } from "../config/media";
   <div class="hero__overlay"></div>
 
   <header class="hero__bar">
-    <img
+    <Image
       class="hero__logo"
-      src="/img/logo-magna-white.png"
-      width="180"
-      height="61"
+      src={logoWhite}
+      width={180}
+      height={61}
       alt="Magna Cerámica"
     />
   </header>

@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Footer from "../components/Footer.astro";
+import CookieConsent from "../components/CookieConsent.astro";
 
 interface Props {
   title: string;
@@ -29,10 +30,6 @@ const pageTitle = `${title} — Magna Cerámica`;
   </head>
   <body>
     <header class="legal-bar">
-      <a href="/" class="legal-bar__home" aria-label="Magna Cerámica — home">
-        <span class="legal-bar__wordmark">Magna</span>
-        <span class="legal-bar__wordmark legal-bar__wordmark--sub">Cerámica</span>
-      </a>
       <a href="/" class="legal-bar__back">&#8592; Back to site</a>
     </header>
 
@@ -46,6 +43,7 @@ const pageTitle = `${title} — Magna Cerámica`;
     </main>
 
     <Footer />
+    <CookieConsent />
 
     <style>
       .legal-bar {
@@ -54,26 +52,6 @@ const pageTitle = `${title} — Magna Cerámica`;
         justify-content: space-between;
         padding: 1.25rem var(--gutter);
         border-bottom: 1px solid var(--color-grey);
-      }
-
-      .legal-bar__home {
-        display: flex;
-        flex-direction: column;
-        line-height: 1;
-        font-family: var(--font-serif);
-        color: var(--color-ink);
-      }
-
-      .legal-bar__wordmark {
-        font-size: 1.4rem;
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
-      }
-
-      .legal-bar__wordmark--sub {
-        font-size: 0.7rem;
-        letter-spacing: 0.42em;
-        color: var(--color-primary);
       }
 
       .legal-bar__back {

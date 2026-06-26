@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import type { Brand } from "../data/brands";
 
 interface Props {
@@ -12,9 +13,11 @@ const panelLeft = brand.panel === "left";
 <article class={`brand ${panelLeft ? "brand--panel-left" : "brand--panel-right"}`}>
   <div class="brand__feature">
     <div class="brand__main">
-      <img
+      <Image
         src={brand.main}
         alt={`${brand.name} ceramic tiles`}
+        widths={[760, 1140, 1520, 2000]}
+        sizes="(max-width: 768px) 100vw, 62vw"
         loading="lazy"
         decoding="async"
       />
@@ -44,10 +47,18 @@ const panelLeft = brand.panel === "left";
     <ul class="carousel__track" data-track>
       {
         brand.carousel.map((src) => {
-          const name = src.split("_")[1] ?? brand.name;
+          const name = src.src.split("/").pop()?.split("_")[1] ?? brand.name;
           return (
             <li class="carousel__item">
-              <img src={src} alt={`${name} — ${brand.name}`} loading="lazy" decoding="async" />
+              <Image
+                src={src}
+                alt={`${name} — ${brand.name}`}
+                widths={[400, 600, 900]}
+                sizes="(max-width: 768px) 80vw, 450px"
+                data-full={src.src}
+                loading="lazy"
+                decoding="async"
+              />
             </li>
           );
         })
@@ -67,6 +78,14 @@ const panelLeft = brand.panel === "left";
   .brand {
     --carousel-gap: clamp(0.75rem, 1.4vw, 1.25rem);
     margin-block: clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  /* Wider breathing room between consecutive brand blocks
+     (e.g. Baldocer → Alaplana) than at the section's outer edges.
+     Uses `~` not `+` because Astro renders a hoisted <script> between the
+     two <article> siblings in dev, which would break an adjacent combinator. */
+  .brand ~ .brand {
+    margin-top: clamp(5rem, 10vw, 8.5rem);
   }
 
   .brand__feature {
@@ -99,6 +118,24 @@ const panelLeft = brand.panel === "left";
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Ken Burns: continuous zoom + drift on the main image.
+       linear timing so it never decelerates to a stop at the extremes. */
+    animation: brand-kenburns 10s linear infinite alternate;
+    will-change: transform;
+  }
+
+  /* Offset the two brands so they don't move in sync. */
+  .brand--panel-left .brand__main img {
+    animation-delay: -5s;
+  }
+
+  @keyframes brand-kenburns {
+    from {
+      transform: scale(1) translate3d(0, 0, 0);
+    }
+    to {
+      transform: scale(1.18) translate3d(-3%, -2%, 0);
+    }
   }
 
   .brand__panel {
@@ -207,6 +244,7 @@ const panelLeft = brand.panel === "left";
     width: 100%;
     height: 100%;
     object-fit: cover;
+    cursor: zoom-in;
     transition: transform 0.6s var(--ease);
   }
 
@@ -262,9 +300,172 @@ const panelLeft = brand.panel === "left";
       min-height: 0;
     }
   }
+
+  /* ---- Lightbox (shared singleton, lives on <body>) ---- */
+  :global(.lightbox) {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 4vw, 3rem);
+    background: rgba(20, 18, 16, 0.92);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
+  }
+
+  :global(.lightbox.is-open) {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  :global(.lightbox__img) {
+    max-width: min(1100px, 92vw);
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    transform: scale(0.97);
+    transition: transform 0.3s var(--ease);
+  }
+
+  :global(.lightbox.is-open .lightbox__img) {
+    transform: scale(1);
+  }
+
+  :global(.lightbox__close),
+  :global(.lightbox__nav) {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--color-white);
+    cursor: pointer;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.25s var(--ease);
+  }
+
+  :global(.lightbox__close):hover,
+  :global(.lightbox__nav):hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
+  :global(.lightbox__close) {
+    top: clamp(1rem, 3vw, 2rem);
+    right: clamp(1rem, 3vw, 2rem);
+    width: 44px;
+    height: 44px;
+    font-size: 1.5rem;
+  }
+
+  :global(.lightbox__nav) {
+    top: 50%;
+    transform: translateY(-50%);
+    width: 52px;
+    height: 52px;
+    font-size: 2rem;
+  }
+
+  :global(.lightbox__nav--prev) {
+    left: clamp(0.5rem, 2vw, 1.5rem);
+  }
+
+  :global(.lightbox__nav--next) {
+    right: clamp(0.5rem, 2vw, 1.5rem);
+  }
+
+  @media (max-width: 768px) {
+    :global(.lightbox__nav) {
+      width: 42px;
+      height: 42px;
+      font-size: 1.6rem;
+    }
+  }
 </style>
 
 <script>
+  type Slide = { src: string; alt: string };
+  let openLightbox: ((slides: Slide[], index: number) => void) | null = null;
+
+  function ensureLightbox(): (slides: Slide[], index: number) => void {
+    const existing = document.querySelector<HTMLElement>("[data-lightbox]");
+    if (openLightbox && existing) return openLightbox;
+
+    const el = document.createElement("div");
+    el.className = "lightbox";
+    el.setAttribute("data-lightbox", "");
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-modal", "true");
+    el.setAttribute("aria-hidden", "true");
+    el.innerHTML = `
+      <button class="lightbox__nav lightbox__nav--prev" type="button" aria-label="Previous image">&#8249;</button>
+      <img class="lightbox__img" alt="" />
+      <button class="lightbox__nav lightbox__nav--next" type="button" aria-label="Next image">&#8250;</button>
+      <button class="lightbox__close" type="button" aria-label="Close">&#215;</button>`;
+    document.body.appendChild(el);
+
+    const img = el.querySelector<HTMLImageElement>(".lightbox__img")!;
+    let slides: Slide[] = [];
+    let index = 0;
+
+    const render = () => {
+      const s = slides[index];
+      if (!s) return;
+      img.src = s.src;
+      img.alt = s.alt;
+    };
+
+    const close = () => {
+      el.classList.remove("is-open");
+      el.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
+    };
+
+    const go = (dir: number) => {
+      if (!slides.length) return;
+      index = (index + dir + slides.length) % slides.length;
+      render();
+    };
+
+    openLightbox = (list, i) => {
+      slides = list;
+      index = i;
+      render();
+      el.classList.add("is-open");
+      el.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
+    };
+
+    el.querySelector(".lightbox__close")!.addEventListener("click", close);
+    el.querySelector(".lightbox__nav--prev")!.addEventListener("click", (e) => {
+      e.stopPropagation();
+      go(-1);
+    });
+    el.querySelector(".lightbox__nav--next")!.addEventListener("click", (e) => {
+      e.stopPropagation();
+      go(1);
+    });
+    // Click on the backdrop (not the image/buttons) closes
+    el.addEventListener("click", (e) => {
+      if (e.target === el) close();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (!el.classList.contains("is-open")) return;
+      if (e.key === "Escape") close();
+      else if (e.key === "ArrowLeft") go(-1);
+      else if (e.key === "ArrowRight") go(1);
+    });
+
+    return openLightbox;
+  }
+
   function initBrandCarousels() {
     document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((root) => {
       const track = root.querySelector<HTMLElement>("[data-track]");
@@ -307,11 +508,27 @@ const panelLeft = brand.panel === "left";
         { passive: true }
       );
 
+      // Images in this carousel, used both for drag-click detection and the
+      // lightbox gallery.
+      const imgs = Array.from(
+        track.querySelectorAll<HTMLImageElement>(".carousel__item img")
+      );
+      // Lightbox uses the full-resolution original (data-full) rather than the
+      // downscaled thumbnail that <Image> renders into the carousel.
+      const slides = imgs.map((im) => ({
+        src: im.dataset.full || im.src,
+        alt: im.alt,
+      }));
+
       // ---- Drag to scroll ----
       let isDown = false;
       let startX = 0;
       let startScroll = 0;
       let moved = false;
+      // Index of the image pressed on pointerdown. Tracked here because
+      // setPointerCapture redirects the eventual `click` to the track, so we
+      // open the lightbox on pointerup instead.
+      let pressedIndex = -1;
 
       track.addEventListener("pointerdown", (e) => {
         if (e.button !== 0) return;
@@ -319,6 +536,10 @@ const panelLeft = brand.panel === "left";
         moved = false;
         startX = e.clientX;
         startScroll = track.scrollLeft;
+        const img = (e.target as HTMLElement)
+          .closest(".carousel__item")
+          ?.querySelector("img");
+        pressedIndex = img ? imgs.indexOf(img as HTMLImageElement) : -1;
         track.classList.add("is-dragging");
         track.setPointerCapture(e.pointerId);
       });
@@ -339,7 +560,13 @@ const panelLeft = brand.panel === "left";
         } catch {}
       };
 
-      track.addEventListener("pointerup", endDrag);
+      track.addEventListener("pointerup", (e) => {
+        const tapped = !moved && pressedIndex >= 0;
+        const i = pressedIndex;
+        endDrag(e);
+        // A clean tap (no drag) on an image opens it in the lightbox.
+        if (tapped) ensureLightbox()(slides, i);
+      });
       track.addEventListener("pointercancel", endDrag);
       // Suppress click navigation right after a drag
       track.addEventListener("click", (e) => {

@@ -1,0 +1,109 @@
+---
+// Cookie consent + privacy preferences manager (vanilla-cookieconsent v3).
+// Single toggleable category: Tracking (Google Analytics). The GA4 script is
+// loaded only after the visitor accepts. Set the property id in .env as
+// PUBLIC_GA_ID (e.g. PUBLIC_GA_ID="G-XXXXXXXXXX"); until then GA stays off.
+//
+// The footer / cookies-policy links open this modal via [data-cc="show-preferencesModal"].
+---
+
+<script>
+  import "vanilla-cookieconsent/dist/cookieconsent.css";
+  import * as CookieConsent from "vanilla-cookieconsent";
+
+  const GA_ID = import.meta.env.PUBLIC_GA_ID;
+
+  // Inject Google Analytics (gtag) once, only on consent.
+  function loadGoogleAnalytics() {
+    if (!GA_ID || (window as any).__gaLoaded) return;
+    (window as any).__gaLoaded = true;
+
+    const s = document.createElement("script");
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+    document.head.appendChild(s);
+
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    function gtag(...args: any[]) {
+      (window as any).dataLayer.push(args);
+    }
+    (window as any).gtag = gtag;
+    gtag("js", new Date());
+    gtag("config", GA_ID, { anonymize_ip: true });
+  }
+
+  CookieConsent.run({
+    guiOptions: {
+      consentModal: { layout: "box", position: "bottom right" },
+      preferencesModal: { layout: "box" },
+    },
+
+    categories: {
+      analytics: {
+        autoClear: {
+          cookies: [{ name: /^_ga/ }, { name: "_gid" }, { name: "_gat" }],
+        },
+        services: {
+          ga: {
+            label: "Google Analytics",
+            onAccept: loadGoogleAnalytics,
+            onReject: () => {},
+          },
+        },
+      },
+    },
+
+    language: {
+      default: "en",
+      translations: {
+        en: {
+          consentModal: {
+            title: "We use cookies",
+            description:
+              "When you visit our website we may store or retrieve information through your browser, usually as cookies. We use Google Analytics cookies to understand how the site is used. As we respect your right to privacy, you can choose whether to allow them. See our <a href='/cookies-policy'>Cookies Policy</a> for details.",
+            acceptAllBtn: "Accept",
+            acceptNecessaryBtn: "Reject",
+            showPreferencesBtn: "Manage preferences",
+          },
+          preferencesModal: {
+            title: "Privacy Preferences",
+            acceptAllBtn: "Accept all",
+            acceptNecessaryBtn: "Reject all",
+            savePreferencesBtn: "Save preferences",
+            closeIconLabel: "Close",
+            sections: [
+              {
+                description:
+                  "When you visit any website it may store or retrieve information through your browser, generally as cookies. As we respect your right to privacy, you can choose not to allow certain types of cookies. However, blocking them may affect your experience.",
+              },
+              {
+                title: "Tracking",
+                description:
+                  "We use Google Analytics cookies to record and analyse how the site is used. This helps us improve it. These cookies do not identify you personally.",
+                linkedCategory: "analytics",
+              },
+              {
+                title: "More information",
+                description:
+                  "For any queries about our cookie policy, see the <a href='/cookies-policy'>Cookies Policy</a>.",
+              },
+            ],
+          },
+        },
+      },
+    },
+  });
+</script>
+
+<style is:global>
+  #cc-main {
+    --cc-font-family: var(--font-sans);
+    --cc-btn-primary-bg: var(--color-primary);
+    --cc-btn-primary-border-color: var(--color-primary);
+    --cc-btn-primary-text: var(--color-white);
+    --cc-btn-primary-hover-bg: var(--color-primary-dark);
+    --cc-btn-primary-hover-border-color: var(--color-primary-dark);
+    --cc-toggle-on-bg: var(--color-primary);
+    --cc-link-color: var(--color-primary);
+  }
+</style>

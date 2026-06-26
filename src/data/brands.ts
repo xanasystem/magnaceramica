@@ -1,12 +1,28 @@
+import type { ImageMetadata } from "astro";
+
 export interface Brand {
   id: string;
   name: string;
   description: string;
   url: string;
-  main: string;
-  carousel: string[];
+  main: ImageMetadata;
+  carousel: ImageMetadata[];
   /** Side the terracotta info panel sits on, to alternate layout */
   panel: "left" | "right";
+}
+
+// Eagerly import every brand image so they can be optimized by `astro:assets`.
+// Keep the data below path-based (single source of truth) and resolve each
+// path to its imported `ImageMetadata` via `img()`.
+const brandImages = import.meta.glob<{ default: ImageMetadata }>(
+  "../assets/brands/**/*.jpg",
+  { eager: true },
+);
+
+function img(path: string): ImageMetadata {
+  const mod = brandImages[`../assets/brands/${path}`];
+  if (!mod) throw new Error(`Brand image not found: ../assets/brands/${path}`);
+  return mod.default;
 }
 
 export const brands: Brand[] = [
@@ -17,18 +33,18 @@ export const brands: Brand[] = [
       "Baldocer is a leading Spanish ceramic tile manufacturer with more than 30 years of experience, present in over 150 countries. Its collections combine design, technical performance, and a broad product range for residential and commercial projects.",
     url: "https://www.baldocer.com",
     panel: "right",
-    main: "/img/brands/baldocer/main/MagnaCeramica_Royale_Baldocer.jpg",
+    main: img("baldocer/main/MagnaCeramica_Royale_Baldocer.jpg"),
     carousel: [
-      "/img/brands/baldocer/carousel/MagnaCeramica_Amalfi_Baldocer.jpg",
-      "/img/brands/baldocer/carousel/MagnaCeramica_Blanco_Baldocer.jpg",
-      "/img/brands/baldocer/carousel/MagnaCeramica_Brera_Baldocer.jpg",
-      "/img/brands/baldocer/carousel/MagnaCeramica_Core_Baldocer.jpg",
-      "/img/brands/baldocer/carousel/MagnaCeramica_Covent_Baldocer.jpg",
-      "/img/brands/baldocer/carousel/MagnaCeramica_Diamonds_Baldocer.jpg",
-      "/img/brands/baldocer/carousel/MagnaCeramica_Ginza_Baldocer.jpg",
-      "/img/brands/baldocer/carousel/MagnaCeramica_Landart_Baldocer.jpg",
-      "/img/brands/baldocer/carousel/MagnaCeramica_Nomad_Baldocer.jpg",
-      "/img/brands/baldocer/carousel/MagnaCeramica_Quartier_Baldocer.jpg",
+      img("baldocer/carousel/MagnaCeramica_Amalfi_Baldocer.jpg"),
+      img("baldocer/carousel/MagnaCeramica_Blanco_Baldocer.jpg"),
+      img("baldocer/carousel/MagnaCeramica_Brera_Baldocer.jpg"),
+      img("baldocer/carousel/MagnaCeramica_Core_Baldocer.jpg"),
+      img("baldocer/carousel/MagnaCeramica_Covent_Baldocer.jpg"),
+      img("baldocer/carousel/MagnaCeramica_Diamonds_Baldocer.jpg"),
+      img("baldocer/carousel/MagnaCeramica_Ginza_Baldocer.jpg"),
+      img("baldocer/carousel/MagnaCeramica_Landart_Baldocer.jpg"),
+      img("baldocer/carousel/MagnaCeramica_Nomad_Baldocer.jpg"),
+      img("baldocer/carousel/MagnaCeramica_Quartier_Baldocer.jpg"),
     ],
   },
   {
@@ -36,20 +52,20 @@ export const brands: Brand[] = [
     name: "Alaplana",
     description:
       "Alaplana is a Spanish ceramic tile manufacturer focused on contemporary design, innovation, and versatile ceramic solutions for architecture and interior design. Its collections combine natural-inspired finishes, textures, and formats designed to adapt to residential, commercial, and outdoor projects.",
-    url: "https://www.alaplana.com",
+    url: "https://nuevaalaplana.es",
     panel: "left",
-    main: "/img/brands/alaplana/main/MagnaCeramica_Campaspero_Alaplana.jpg",
+    main: img("alaplana/main/MagnaCeramica_Campaspero_Alaplana.jpg"),
     carousel: [
-      "/img/brands/alaplana/carousel/MagnaCeramica_Amalfi_Alaplana.jpg",
-      "/img/brands/alaplana/carousel/MagnaCeramica_Balance_Alaplana.jpg",
-      "/img/brands/alaplana/carousel/MagnaCeramica_Blade_Alaplana.jpg",
-      "/img/brands/alaplana/carousel/MagnaCeramica_Clays_Alaplana.jpg",
-      "/img/brands/alaplana/carousel/MagnaCeramica_Gravina_Alaplana.jpg",
-      "/img/brands/alaplana/carousel/MagnaCeramica_Halton_Alaplana.jpg",
-      "/img/brands/alaplana/carousel/MagnaCeramica_Kingston_Alaplana.jpg",
-      "/img/brands/alaplana/carousel/MagnaCeramica_Lomma_Alaplana.jpg",
-      "/img/brands/alaplana/carousel/MagnaCeramica_Portland_Alaplana.jpg",
-      "/img/brands/alaplana/carousel/MagnaCeramica_SantaMonica_Alaplana.jpg",
+      img("alaplana/carousel/MagnaCeramica_Amalfi_Alaplana.jpg"),
+      img("alaplana/carousel/MagnaCeramica_Balance_Alaplana.jpg"),
+      img("alaplana/carousel/MagnaCeramica_Blade_Alaplana.jpg"),
+      img("alaplana/carousel/MagnaCeramica_Clays_Alaplana.jpg"),
+      img("alaplana/carousel/MagnaCeramica_Gravina_Alaplana.jpg"),
+      img("alaplana/carousel/MagnaCeramica_Halton_Alaplana.jpg"),
+      img("alaplana/carousel/MagnaCeramica_Kingston_Alaplana.jpg"),
+      img("alaplana/carousel/MagnaCeramica_Lomma_Alaplana.jpg"),
+      img("alaplana/carousel/MagnaCeramica_Portland_Alaplana.jpg"),
+      img("alaplana/carousel/MagnaCeramica_SantaMonica_Alaplana.jpg"),
     ],
   },
 ];

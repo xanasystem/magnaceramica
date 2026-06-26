@@ -1,12 +1,19 @@
 ---
+import { Image } from "astro:assets";
+import teamPhoto from "../assets/team.jpg";
+import logoMerhi from "../assets/logo-merhi.png";
+import logoMagnaFooter from "../assets/logo-magna-white.png";
+
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
   <div class="footer__media">
-    <img
-      src="/img/team.jpg"
+    <Image
+      src={teamPhoto}
       alt="The Magna Cerámica team at work"
+      widths={[768, 1280, 1920]}
+      sizes="100vw"
       loading="lazy"
       decoding="async"
     />
@@ -15,15 +22,17 @@ const year = new Date().getFullYear();
 
   <p class="footer__group">
     Magna Cerámica is the ceramic tile division of
-    <img src="/img/logo-merhi.png" alt="Grupo Merhi" class="footer__merhi" />
+    <Image src={logoMerhi} alt="Grupo Merhi" class="footer__merhi" />
   </p>
 
   <hr class="footer__divider" />
 
   <div class="footer__bar">
-    <img
-      src="/img/logo-magna-footer.png"
+    <Image
+      src={logoMagnaFooter}
       alt="Magna Cerámica"
+      widths={[180, 360]}
+      sizes="180px"
       class="footer__logo"
     />
 
@@ -34,7 +43,7 @@ const year = new Date().getFullYear();
       <span class="footer__sep" aria-hidden="true">|</span>
       <a href="/cookies-policy">Cookies Policy</a>
       <span class="footer__sep" aria-hidden="true">|</span>
-      <a href="/cookies-policy#preferences">Privacy Preferences</a>
+      <a href="/cookies-policy#preferences" data-cc="show-preferencesModal">Privacy Preferences</a>
     </nav>
 
     <p class="footer__copy">&copy; {year} Magna Cerámica. All rights reserved.</p>
