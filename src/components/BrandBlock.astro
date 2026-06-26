@@ -22,19 +22,21 @@ const panelLeft = brand.panel === "left";
 
     <div class="brand__panel">
       <h3 class="brand__name">{brand.name}</h3>
-      <p class="brand__desc">{brand.description}</p>
-      <a class="brand__visit" href={brand.url} target="_blank" rel="noopener">
-        <span>Visit {brand.name}</span>
-        <svg class="brand__visit-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-          <path
-            d="M6.6967 17.3033L17.3033 6.6967M17.5685 14.9168L17.3033 6.6967L9.08318 6.43153"
-            stroke="currentColor"
-            stroke-width="1.5"
-            stroke-linecap="square"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </a>
+      <div class="brand__panel-body">
+        <p class="brand__desc">{brand.description}</p>
+        <a class="brand__visit" href={brand.url} target="_blank" rel="noopener">
+          <span>Visit {brand.name}</span>
+          <svg class="brand__visit-arrow" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M6.6967 17.3033L17.3033 6.6967M17.5685 14.9168L17.3033 6.6967L9.08318 6.43153"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="square"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -69,13 +71,16 @@ const panelLeft = brand.panel === "left";
 
   .brand__feature {
     display: grid;
-    grid-template-columns: 1.6fr 1fr;
+    grid-template-columns: 2.6fr 1fr;
     gap: var(--carousel-gap);
-    min-height: clamp(360px, 42vw, 560px);
+    /* Fixed height so every brand block (and its main image) is exactly the
+       same height regardless of how long the panel text is. Using `height`
+       (not min-/max-height) pins both to 580px. */
+    height: 580px;
   }
 
   .brand--panel-left .brand__feature {
-    grid-template-columns: 1fr 1.6fr;
+    grid-template-columns: 1fr 2.6fr;
   }
 
   .brand--panel-left .brand__main {
@@ -99,10 +104,16 @@ const panelLeft = brand.panel === "left";
   .brand__panel {
     background: var(--color-primary);
     color: var(--color-white);
-    padding: clamp(2rem, 4vw, 3.5rem);
+    padding: clamp(2.25rem, 4vw, 3rem) clamp(1.5rem, 2.6vw, 2.25rem);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+
+  .brand__panel-body {
+    display: flex;
+    flex-direction: column;
     gap: 0.75rem;
   }
 
@@ -186,8 +197,8 @@ const panelLeft = brand.panel === "left";
 
   .carousel__item {
     position: relative;
-    flex: 0 0 clamp(230px, 26vw, 350px);
-    aspect-ratio: 3 / 2;
+    flex: 0 0 clamp(260px, 30vw, 450px);
+    aspect-ratio: 4 / 3;
     scroll-snap-align: start;
     overflow: hidden;
   }
@@ -236,6 +247,7 @@ const panelLeft = brand.panel === "left";
     .brand__feature,
     .brand--panel-left .brand__feature {
       grid-template-columns: 1fr;
+      min-height: 0;
     }
 
     .brand--panel-left .brand__main,
@@ -243,8 +255,11 @@ const panelLeft = brand.panel === "left";
       order: initial;
     }
 
+    /* Stacked layout: force both brand images to the same height
+       (object-fit crops) instead of each photo's natural ratio. */
     .brand__main {
-      min-height: 240px;
+      aspect-ratio: 3 / 2;
+      min-height: 0;
     }
   }
 </style>

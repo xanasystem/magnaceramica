@@ -18,8 +18,7 @@
   --font-sans: "Montserrat", system-ui, -apple-system, "Segoe UI", sans-serif;
 
   /* Layout */
-  --container: 1200px;
-  --container-wide: 1440px;
+  --container: 1440px;
   --gutter: clamp(1.25rem, 4vw, 4rem);
 
   /* Spacing scale */
