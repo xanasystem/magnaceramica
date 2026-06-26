@@ -285,6 +285,9 @@ const panelLeft = brand.panel === "left";
     .brand__feature,
     .brand--panel-left .brand__feature {
       grid-template-columns: 1fr;
+      /* Stacked: image and panel are separate rows, so the fixed 580px height
+         must be released or they overlap. */
+      height: auto;
       min-height: 0;
     }
 

@@ -22,7 +22,15 @@ const year = new Date().getFullYear();
 
   <p class="footer__group">
     Magna Cerámica is the ceramic tile division of
-    <Image src={logoMerhi} alt="Grupo Merhi" class="footer__merhi" />
+    <a
+      href="https://grupomerhi.com/"
+      target="_blank"
+      rel="noopener"
+      class="footer__merhi-link"
+      aria-label="Grupo Merhi (opens in a new tab)"
+    >
+      <Image src={logoMerhi} alt="Grupo Merhi" class="footer__merhi" />
+    </a>
   </p>
 
   <hr class="footer__divider" />
@@ -73,6 +81,9 @@ const year = new Date().getFullYear();
     width: 100%;
     height: 100%;
     object-fit: cover;
+    /* Show the upper band (desks + people) rather than the centred crop,
+       which sat lower on the floor. */
+    object-position: center 38%;
   }
 
   .footer__media-overlay {
@@ -92,6 +103,16 @@ const year = new Date().getFullYear();
     font-weight: 300;
     letter-spacing: 0.02em;
     color: var(--color-white);
+  }
+
+  .footer__merhi-link {
+    display: inline-flex;
+    align-items: center;
+    transition: opacity 0.25s var(--ease);
+  }
+
+  .footer__merhi-link:hover {
+    opacity: 0.8;
   }
 
   .footer__merhi {
