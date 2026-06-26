@@ -59,6 +59,16 @@ video {
   height: auto;
 }
 
+/* Text selection highlight */
+::selection {
+  background: #bc9886;
+  color: var(--color-white);
+}
+::-moz-selection {
+  background: #bc9886;
+  color: var(--color-white);
+}
+
 a {
   color: inherit;
   text-decoration: none;
