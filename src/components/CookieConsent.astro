@@ -38,17 +38,18 @@
       preferencesModal: { layout: "box" },
     },
 
+    // Load GA whenever the analytics category is (or becomes) accepted.
+    onConsent: () => {
+      if (CookieConsent.acceptedCategory("analytics")) loadGoogleAnalytics();
+    },
+    onChange: () => {
+      if (CookieConsent.acceptedCategory("analytics")) loadGoogleAnalytics();
+    },
+
     categories: {
       analytics: {
         autoClear: {
           cookies: [{ name: /^_ga/ }, { name: "_gid" }, { name: "_gat" }],
-        },
-        services: {
-          ga: {
-            label: "Google Analytics",
-            onAccept: loadGoogleAnalytics,
-            onReject: () => {},
-          },
         },
       },
     },
