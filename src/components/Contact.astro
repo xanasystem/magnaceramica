@@ -1,7 +1,5 @@
 ---
-// Contact section.
-// The form is intentionally left blank for now — it will be embedded later
-// via a third-party app. The right column reserves the space.
+const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
 ---
 
 <section class="contact section" id="contact">
@@ -44,10 +42,44 @@
       </ul>
     </div>
 
-    <!-- Form placeholder: embed the contact form app here later -->
-    <div class="contact__form-placeholder" data-form-slot>
-      <span class="contact__form-hint">Contact form coming soon</span>
-    </div>
+    <form id="contact-form" class="contact__form" novalidate>
+      <div class="contact__row">
+        <div class="contact__field">
+          <input type="text" name="name" placeholder="Name *" required autocomplete="name" aria-label="Name" aria-required="true" />
+          <small class="contact__error" data-error-for="name"></small>
+        </div>
+        <div class="contact__field">
+          <input type="email" name="email" placeholder="Email *" required autocomplete="email" aria-label="Email" aria-required="true" inputmode="email" />
+          <small class="contact__error" data-error-for="email"></small>
+        </div>
+        <div class="contact__field">
+          <input type="tel" name="phone" placeholder="Phone" autocomplete="tel" aria-label="Phone" inputmode="tel" />
+          <small class="contact__error" data-error-for="phone"></small>
+        </div>
+      </div>
+      <div class="contact__field">
+        <textarea name="message" placeholder="Your message *" rows="6" required aria-label="Your message" aria-required="true"></textarea>
+        <small class="contact__error" data-error-for="message"></small>
+      </div>
+
+      <!-- Honeypot: invisible to humans, bots fill it in -->
+      <input type="text" name="company" tabindex="-1" autocomplete="off"
+             style="position:absolute;left:-9999px" aria-hidden="true" />
+
+      <div class="contact__field">
+        <label class="contact__terms">
+          <input type="checkbox" name="terms" required aria-required="true" />
+          <span>Check here if you accept our <a href="/privacy-policy">terms &amp; conditions</a> *</span>
+        </label>
+        <small class="contact__error" data-error-for="terms"></small>
+      </div>
+
+      <!-- Cloudflare Turnstile anti-bot widget -->
+      <div class="cf-turnstile" data-sitekey={TURNSTILE_SITE_KEY}></div>
+
+      <button type="submit" class="contact__btn">Submit message</button>
+      <p id="form-status" class="contact__status" role="status" aria-live="polite"></p>
+    </form>
   </div>
 </section>
 
@@ -113,30 +145,271 @@
     color: var(--color-primary);
   }
 
-  /* Reserves vertical space where the embedded form will go */
-  .contact__form-placeholder {
-    min-height: clamp(320px, 38vw, 420px);
+  /* Form */
+  .contact__form {
     display: grid;
-    place-items: center;
-    border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
-    border-radius: 8px;
-    background: color-mix(in srgb, var(--color-primary) 4%, transparent);
+    gap: 13px;
   }
 
-  .contact__form-hint {
+  .contact__row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+
+  .contact__field {
+    display: grid;
+    gap: 5px;
+    align-content: start;
+  }
+
+  .contact__error {
+    font-size: 0.72rem;
+    line-height: 1.3;
+    color: #c62828;
+    min-height: 0;
+  }
+
+  .contact__form input[type="text"],
+  .contact__form input[type="email"],
+  .contact__form input[type="tel"],
+  .contact__form textarea {
+    width: 100%;
+    padding: 14px 24px;
     font-family: var(--font-sans);
+    font-size: 1rem;
+    color: var(--color-ink);
+    background: var(--color-grey);
+    border: none;
+    outline: none;
+    transition: background 0.2s var(--ease);
+    resize: none;
+  }
+
+  .contact__form input[type="text"]::placeholder,
+  .contact__form input[type="email"]::placeholder,
+  .contact__form input[type="tel"]::placeholder,
+  .contact__form textarea::placeholder {
+    color: var(--color-ink);
+  }
+
+  .contact__form input[type="text"]:focus,
+  .contact__form input[type="email"]:focus,
+  .contact__form input[type="tel"]:focus,
+  .contact__form textarea:focus {
+    background: color-mix(in srgb, var(--color-grey) 70%, var(--color-primary) 30%);
+    outline: 2px solid var(--color-primary);
+    outline-offset: -2px;
+  }
+
+  /* Invalid field state */
+  .contact__form input.is-invalid,
+  .contact__form textarea.is-invalid {
+    outline: 2px solid #c62828;
+    outline-offset: -2px;
+    background: color-mix(in srgb, var(--color-grey) 88%, #c62828 12%);
+  }
+
+  .contact__terms.is-invalid input[type="checkbox"] {
+    border-color: #c62828;
+  }
+
+  .contact__terms {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    cursor: pointer;
+  }
+
+  .contact__terms input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    min-width: 14px;
+    border: 1px solid var(--color-ink);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .contact__terms input[type="checkbox"]:checked {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .contact__terms span {
+    font-size: 0.75rem;
+    color: var(--color-ink);
+  }
+
+  .contact__terms a {
+    color: var(--color-primary);
+  }
+
+  .contact__btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: 100px;
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s var(--ease);
+  }
+
+  .contact__btn:hover {
+    background: var(--color-primary-dark);
+  }
+
+  .contact__status {
     font-size: 0.9rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    min-height: 1.4em;
     color: var(--color-muted);
+    text-align: center;
+  }
+
+  .contact__status.is-success { color: #2e7d32; }
+  .contact__status.is-error   { color: #c62828; }
+
+  @media (max-width: 900px) {
+    .contact__row {
+      grid-template-columns: 1fr 1fr;
+    }
+    .contact__row .contact__field:last-child {
+      grid-column: span 2;
+    }
   }
 
   @media (max-width: 768px) {
     .contact__grid {
       grid-template-columns: 1fr;
     }
-    .contact__form-placeholder {
-      min-height: clamp(220px, 50vw, 300px);
+    .contact__row {
+      grid-template-columns: 1fr;
+    }
+    .contact__row .contact__field:last-child {
+      grid-column: span 1;
     }
   }
 </style>
+
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const status = document.getElementById('form-status') as HTMLElement | null;
+
+  if (form && status) {
+    const isEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    const isPhone = (v: string) => {
+      const digits = v.replace(/\D/g, '');
+      return /^[+]?[\d\s()\-.]{6,}$/.test(v) && digits.length >= 7 && digits.length <= 15;
+    };
+
+    // Validation rules per field. Return an error string, or '' if valid.
+    const rules: Record<string, (value: string, checked: boolean) => string> = {
+      name: (v) => {
+        const t = v.trim();
+        if (!t) return 'Please enter your name.';
+        if (t.length < 2) return 'Name is too short.';
+        return '';
+      },
+      email: (v) => {
+        const t = v.trim();
+        if (!t) return 'Please enter your email.';
+        if (!isEmail(t)) return 'Please enter a valid email address.';
+        return '';
+      },
+      phone: (v) => {
+        const t = v.trim();
+        if (!t) return ''; // optional
+        if (!isPhone(t)) return 'Please enter a valid phone number.';
+        return '';
+      },
+      message: (v) => {
+        const t = v.trim();
+        if (!t) return 'Please enter a message.';
+        if (t.length < 5) return 'Your message is too short.';
+        return '';
+      },
+      terms: (_v, checked) => (checked ? '' : 'You must accept the terms & conditions.'),
+    };
+
+    const errorEl = (name: string) =>
+      form.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
+
+    const setFieldError = (field: HTMLElement, name: string, msg: string) => {
+      const small = errorEl(name);
+      if (small) small.textContent = msg;
+      if (name === 'terms') {
+        field.closest('.contact__terms')?.classList.toggle('is-invalid', !!msg);
+      } else {
+        field.classList.toggle('is-invalid', !!msg);
+      }
+    };
+
+    const validateField = (el: HTMLInputElement | HTMLTextAreaElement) => {
+      const rule = rules[el.name];
+      if (!rule) return true;
+      const msg = rule(el.value, (el as HTMLInputElement).checked);
+      setFieldError(el, el.name, msg);
+      return !msg;
+    };
+
+    const controls = Array.from(
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>(
+        'input[name="name"], input[name="email"], input[name="phone"], textarea[name="message"], input[name="terms"]',
+      ),
+    );
+
+    // Clear a field's error as soon as the user fixes it.
+    controls.forEach((el) => {
+      const evt = el.type === 'checkbox' ? 'change' : 'input';
+      el.addEventListener(evt, () => {
+        if (el.classList.contains('is-invalid') ||
+            el.closest('.contact__terms')?.classList.contains('is-invalid')) {
+          validateField(el);
+        }
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Validate everything; mark all failures and focus the first one.
+      let firstInvalid: HTMLElement | null = null;
+      controls.forEach((el) => {
+        if (!validateField(el) && !firstInvalid) firstInvalid = el;
+      });
+      if (firstInvalid) {
+        status.textContent = 'Please review the highlighted fields.';
+        status.className = 'contact__status is-error';
+        (firstInvalid as HTMLElement).focus();
+        return;
+      }
+
+      status.textContent = 'Sending…';
+      status.className = 'contact__status';
+
+      const res = await fetch('/api/contact', { method: 'POST', body: new FormData(form) });
+      const data = await res.json().catch(() => ({}));
+
+      if (res.status === 429) {
+        status.textContent = 'Too many requests. Please wait a few minutes and try again.';
+        status.className = 'contact__status is-error';
+      } else if (res.ok && data.ok) {
+        form.reset();
+        status.textContent = 'Thank you! We have received your message.';
+        status.className = 'contact__status is-success';
+      } else {
+        status.textContent = data.error ?? 'Could not send. Please try again.';
+        status.className = 'contact__status is-error';
+      }
+
+      (window as any).turnstile?.reset();
+    });
+  }
+</script>
