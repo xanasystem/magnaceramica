@@ -15,7 +15,7 @@
 | Aspecto | Ejemplo mínimo (Guía) | Implementación real (este doc) |
 |---|---|---|
 | Config (destinatarios, asunto, remitente) | Hardcodeada en `form.config.ts` | En **variables de entorno**; `form.config.ts` solo las lee |
-| Campos | `name`, `email`, `message` | + `phone` (opcional) + `terms` (checkbox obligatorio) |
+| Campos | `name`, `email`, `message` | + `phone` (obligatorio) + `terms` (checkbox obligatorio) |
 | Obligatorios | Solo atributo `required` | Marcados con `*` + validación visible |
 | Validación | Solo servidor | **Cliente (UX) + servidor (fuente de verdad)**, mismas reglas |
 | Errores | Un mensaje global | Mensaje **por campo**, resaltado en rojo, foco al primero que falla |
@@ -56,14 +56,14 @@ Reglas:
 |---|---|---|
 | `name` | sí | 2–100 caracteres |
 | `email` | sí | formato `algo@algo.dominio` |
-| `phone` | **no** | si se rellena: 7–15 dígitos; admite `+`, espacios, `-`, `()` |
+| `phone` | sí | 7–15 dígitos; admite `+`, espacios, `-`, `()` |
 | `message` | sí | 5–5000 caracteres |
 | `terms` | sí | checkbox marcado (consentimiento) |
 | `company` | — | **honeypot** oculto; debe ir vacío. No quitar |
 | `cf-turnstile-response` | sí | lo inyecta el widget de Turnstile |
 
 - Los obligatorios se marcan con un asterisco visible (`*`) y llevan `required` + `aria-required`.
-- `phone` y `terms` no se envían a Brevo como cabeceras: `phone` va al cuerpo del email solo si viene relleno; `terms` es solo consentimiento de cliente.
+- `phone` y `terms` no se envían a Brevo como cabeceras: `phone` va al cuerpo del email; `terms` es solo consentimiento de cliente.
 
 ---
 

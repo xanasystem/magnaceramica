@@ -53,7 +53,7 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
           <small class="contact__error" data-error-for="email"></small>
         </div>
         <div class="contact__field">
-          <input type="tel" name="phone" placeholder="Phone" autocomplete="tel" aria-label="Phone" inputmode="tel" />
+          <input type="tel" name="phone" placeholder="Phone *" required autocomplete="tel" aria-label="Phone" aria-required="true" inputmode="tel" />
           <small class="contact__error" data-error-for="phone"></small>
         </div>
       </div>
@@ -325,7 +325,7 @@ const TURNSTILE_SITE_KEY = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY;
       },
       phone: (v) => {
         const t = v.trim();
-        if (!t) return ''; // optional
+        if (!t) return 'Please enter your phone number.';
         if (!isPhone(t)) return 'Please enter a valid phone number.';
         return '';
       },

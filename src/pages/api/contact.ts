@@ -115,7 +115,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   const message = ((form.get('message') as string) ?? '').trim();
   if (name.length < 2 || name.length > 100) return json({ ok: false, error: 'Invalid name' }, 400);
   if (!isEmail(email)) return json({ ok: false, error: 'Invalid email' }, 400);
-  if (phone && !isPhone(phone)) return json({ ok: false, error: 'Invalid phone' }, 400);
+  if (!isPhone(phone)) return json({ ok: false, error: 'Invalid phone' }, 400);
   if (message.length < 5 || message.length > 5000) return json({ ok: false, error: 'Invalid message' }, 400);
 
   // 4) Notification email to client
