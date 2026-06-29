@@ -44,6 +44,18 @@ Hero → About → Brands → Experience → CustomTiles → Contact → Footer.
 
 Heavy files (videos) are **not** bundled in the repo — they're served from a Cloudflare R2 bucket. URLs live in `src/config/media.ts` (`R2_BASE` + `media`). When adding video or other large media, upload it to the bucket and reference it via `media.ts` rather than committing the binary. Brand tile JPGs live in `src/assets/brands/` (optimized at build time by `astro:assets`) but remain candidates for the same treatment if repo size grows.
 
+## Contact form
+
+The contact form (`src/components/Contact.astro`) posts to a serverless endpoint at `src/pages/api/contact.ts` (`prerender = false`, runs on Vercel). `src/form.config.ts` reads recipients/sender/subject from env vars; `.env.example` documents them. Full docs live in `docs/forms/`.
+
+Security layers (do **not** remove any):
+
+- **Turnstile** (Cloudflare CAPTCHA) + **honeypot** (`company` field, must be empty) + **two-layer validation** (client UX in the component, server is the source of truth in the endpoint — same rules).
+- **Secrets** (`BREVO_API_KEY`, `TURNSTILE_SECRET_KEY`) live only in Vercel env vars; `.env` is gitignored. Only `PUBLIC_TURNSTILE_SITE_KEY` reaches the browser.
+- **Vercel Firewall rate limit** on `/api/contact`: 5 requests / 10 min, Fixed Window, keyed by IP, Deny (persistent). The office IP is allowlisted with an Allow rule ordered **above** the rate-limit rule. This is configured in the Vercel dashboard (Firewall), not in code.
+
+Email is sent via Brevo's JSON API from the shared verified domain `forms.xanasystem.com` (DKIM set up). A `200`/`ok` means Brevo accepted the call, not that the mail was delivered — trace issues via the Brevo transactional logs (`messageId` is logged). Adding a field means editing all three places: the `<input>` + client validation rule, the server read/validate/`escapeHtml`, and the email `htmlContent`.
+
 ## Legal pages
 
 `legal-notice`, `privacy-policy`, and `cookies-policy` use `LegalLayout.astro` (marked `noindex`). The layout styles slotted content via `:global(...)` selectors and provides helper classes like `.cookie-table` and `.placeholder` for unfilled legal details.
